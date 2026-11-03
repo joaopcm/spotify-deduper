@@ -45,6 +45,8 @@ bun src/cli.tsx undo     # re-like everything the last apply removed
 | `a` | apply (asks `y`/`n` first) |
 | `q` | quit without changes |
 
+groups in yellow need a look: the oldest version can't be played, nothing in the group can be played, or two plain titles have different recordings (`maybe different songs, check`, e.g. two different "Intro" tracks by one artist).
+
 ## safety
 
 - `scan` writes a full backup of every liked song to `backups/` before anything else.

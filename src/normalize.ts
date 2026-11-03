@@ -25,15 +25,14 @@ export const VERSION_WORDS = [
 
 const versionWord = new RegExp(`\\b(${VERSION_WORDS.join("|")})\\b`, "i");
 const bracketed = /\s*[(\[]([^)\]]*)[)\]]/g;
-const dashSuffix = /\s+-\s+(.*)$/;
 
 function stripVersionTags(title: string): string {
   let result = title.replace(bracketed, (segment, inner: string) =>
     versionWord.test(inner) ? "" : segment,
   );
-  const suffix = result.match(dashSuffix);
-  if (suffix?.[1] && versionWord.test(suffix[1])) {
-    result = result.slice(0, suffix.index);
+  const lastDash = result.lastIndexOf(" - ");
+  if (lastDash !== -1 && versionWord.test(result.slice(lastDash + 3))) {
+    result = result.slice(0, lastDash);
   }
   return result;
 }

@@ -32,3 +32,9 @@ test("hasVersionTag", () => {
   expect(hasVersionTag("Faded")).toBe(false);
   expect(hasVersionTag("Live Forever")).toBe(false);
 });
+
+test("only the last dash segment is treated as a version tag", () => {
+  expect(normalizeTitle("Symphony No. 5 - I. Allegro - Live")).toBe("symphony no 5 i allegro");
+  expect(normalizeTitle("Symphony No. 5 - II. Andante - Live")).toBe("symphony no 5 ii andante");
+  expect(normalizeTitle("A - B Side - Mono Version")).not.toBe(normalizeTitle("A - C Side - Mono Version"));
+});

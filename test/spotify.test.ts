@@ -126,3 +126,10 @@ describe("library writes", () => {
     expect(api.calls).toHaveLength(0);
   });
 });
+
+test("relinked tracks keep the uri that is actually in the library", async () => {
+  const relinked = apiItem(7, { uri: "spotify:track:playable", linked_from: { uri: "spotify:track:liked" } });
+  const api = fakeApi(() => json({ items: [relinked], total: 1, next: null }));
+  const { tracks } = await client(api).fetchLikedTracks(() => {});
+  expect(tracks[0]!.uri).toBe("spotify:track:liked");
+});

@@ -14,6 +14,8 @@ const REASON_FLAG: Record<DuplicateGroup["reason"], string> = {
   "no-playable": "  no playable version",
 };
 
+const SUSPECT_FLAG = "  maybe different songs, check";
+
 function describe(track: LikedTrack): string {
   const unplayable = track.isPlayable ? "" : " · unplayable";
   return `${track.name} · ${track.album} · added ${track.addedAt.slice(0, 10)}${unplayable}`;
@@ -29,8 +31,8 @@ function buildLines(s: ReviewState): Line[] {
     return [
       {
         key: group.id,
-        text: `${isCurrent && !isExpanded ? "›" : " "} ${box} ${group.keeper.artists.join(", ")} · ${group.keeper.name}${REASON_FLAG[group.reason]}`,
-        color: group.reason === "oldest" ? undefined : "yellow",
+        text: `${isCurrent && !isExpanded ? "›" : " "} ${box} ${group.keeper.artists.join(", ")} · ${group.keeper.name}${REASON_FLAG[group.reason]}${group.suspect ? SUSPECT_FLAG : ""}`,
+        color: group.reason === "oldest" && !group.suspect ? undefined : "yellow",
         focused: isCurrent && !isExpanded,
       },
       { key: `${group.id}:keep`, text: `      keep  ${describe(group.keeper)}`, color: "green", focused: false },
@@ -90,7 +92,7 @@ export function Review(p: { groups: DuplicateGroup[]; onApprove: (uris: string[]
         {state.filter ? <Text dimColor>  filter: {state.filter}</Text> : null}
       </Text>
       {lines.map((line) => (
-        <Text key={line.key} color={line.color} dimColor={line.dim} inverse={line.focused}>
+        <Text key={line.key} wrap="truncate-end" color={line.color} dimColor={line.dim} inverse={line.focused}>
           {line.text}
         </Text>
       ))}

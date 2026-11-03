@@ -25,6 +25,7 @@ type SavedTrackItem = {
     external_ids?: { isrc?: string };
     is_playable?: boolean;
     duration_ms: number;
+    linked_from?: { uri: string };
   } | null;
 };
 
@@ -33,7 +34,7 @@ type SavedTracksPage = { items: SavedTrackItem[]; total: number; next: string | 
 function toLikedTrack(item: SavedTrackItem & { track: NonNullable<SavedTrackItem["track"]> }): LikedTrack {
   const t = item.track;
   return {
-    uri: t.uri,
+    uri: t.linked_from?.uri ?? t.uri,
     name: t.name,
     artists: t.artists.map((a) => a.name),
     album: t.album.name,

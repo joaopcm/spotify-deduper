@@ -30,7 +30,7 @@ function fakeClient(failOnRemoveCall?: number) {
 
 let dir: string;
 const others = Array.from({ length: 90 }, (_, i) => track(`spotify:track:dup${i}`));
-const group: DuplicateGroup = { id: "spotify:track:keep", keeper: track("spotify:track:keep"), others, reason: "oldest" };
+const group: DuplicateGroup = { id: "spotify:track:keep", keeper: track("spotify:track:keep"), others, reason: "oldest", suspect: false };
 
 function setup(overrides: { scannedAt?: string; uris?: string[]; appliedAt?: string | null } = {}) {
   const scan: ScanResult = { version: 1, scannedAt: overrides.scannedAt ?? SCANNED_AT, trackCount: 91, isrcAvailable: true, groups: [group] };
@@ -128,4 +128,11 @@ describe("undoLast", () => {
     const { client } = fakeClient();
     await expect(undoLast({ client, dir, onProgress: () => {} })).rejects.toThrow("nothing to undo");
   });
+});
+
+test("an empty selection is refused and creates no undo log", async () => {
+  setup({ uris: [] });
+  const { client } = fakeClient();
+  await expect(applySelection({ client, dir, now: NOW, onProgress: () => {} })).rejects.toThrow("selection is empty: nothing to unlike");
+  expect(latestUndo(dir)).toBeNull();
 });

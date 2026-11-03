@@ -20,6 +20,11 @@ export function pickKeeper(tracks: LikedTrack[]): { keeper: LikedTrack; reason: 
   };
 }
 
+function looksLikeDifferentSongs(group: LikedTrack[]): boolean {
+  const untagged = group.filter((t) => !hasVersionTag(t.name));
+  return new Set(untagged.map((t) => t.isrc ?? t.uri)).size > 1;
+}
+
 function createUnionFind(size: number) {
   const parent = Array.from({ length: size }, (_, i) => i);
   const find = (i: number): number => {
@@ -70,6 +75,7 @@ export function findDuplicateGroups(tracks: LikedTrack[]): DuplicateGroup[] {
         keeper,
         others: group.filter((t) => t !== keeper).sort(byKeeperPreference),
         reason,
+        suspect: looksLikeDifferentSongs(group),
       };
     })
     .sort(

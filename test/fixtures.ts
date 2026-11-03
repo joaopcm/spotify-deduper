@@ -15,7 +15,7 @@ export function track(uri: string, overrides: Partial<LikedTrack> = {}): LikedTr
 }
 
 export function group(keeper: LikedTrack, others: LikedTrack[], reason: KeeperReason = "oldest"): DuplicateGroup {
-  return { id: keeper.uri, keeper, others, reason };
+  return { id: keeper.uri, keeper, others, reason, suspect: false };
 }
 
 export const sampleGroups: DuplicateGroup[] = [

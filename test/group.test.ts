@@ -106,3 +106,23 @@ describe("pickKeeper", () => {
     expect(pickKeeper([x, y]).keeper.uri).toBe("spotify:track:x");
   });
 });
+
+describe("suspect groups", () => {
+  test("two untagged titles with different ISRCs are flagged as possibly different songs", () => {
+    const a = track({ name: "Intro", isrc: "X1", album: "First" });
+    const b = track({ name: "Intro", isrc: "X2", album: "Second" });
+    expect(findDuplicateGroups([a, b])[0]!.suspect).toBe(true);
+  });
+
+  test("original plus tagged version is not suspect", () => {
+    const a = track({ name: "Faded", isrc: "X1" });
+    const b = track({ name: "Faded - Remix", isrc: "X2" });
+    expect(findDuplicateGroups([a, b])[0]!.suspect).toBe(false);
+  });
+
+  test("same ISRC is never suspect", () => {
+    const a = track({ name: "Intro", isrc: "X1" });
+    const b = track({ name: "Intro", isrc: "X1" });
+    expect(findDuplicateGroups([a, b])[0]!.suspect).toBe(false);
+  });
+});

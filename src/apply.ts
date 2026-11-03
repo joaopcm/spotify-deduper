@@ -17,6 +17,7 @@ export async function applySelection(o: {
 }): Promise<{ removed: number; undoPath: string }> {
   const selection = readSelection(o.dir);
   if (!selection) throw new Error("no approved selection: run spotify-deduper review first");
+  if (selection.uris.length === 0) throw new Error("selection is empty: nothing to unlike");
   if (selection.appliedAt) throw new Error(`selection already applied at ${selection.appliedAt}`);
 
   const scan = readScan(o.dir);

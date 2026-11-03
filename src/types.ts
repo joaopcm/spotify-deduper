@@ -16,6 +16,7 @@ export type DuplicateGroup = {
   keeper: LikedTrack;
   others: LikedTrack[];
   reason: KeeperReason;
+  suspect: boolean;
 };
 
 export type ScanResult = {

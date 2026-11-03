@@ -88,3 +88,18 @@ test("renders only the rows that fit the terminal for large libraries", async ()
   expect(frame.split("\n").length).toBeLessThanOrEqual(24);
   expect(frame).toContain("500 groups");
 });
+
+test("long rows are truncated to the terminal width", async () => {
+  const { group, track } = await import("./fixtures");
+  const long = "x".repeat(300);
+  const frame = render(
+    <Review groups={[group(track("k", { name: long, album: long }), [track("o", { name: long })])]} onApprove={() => {}} onQuit={() => {}} />,
+  ).lastFrame()!;
+  expect(frame.split("\n")).toHaveLength(5);
+});
+
+test("suspect groups are flagged", async () => {
+  const { track } = await import("./fixtures");
+  const suspect = { id: "k", keeper: track("k", { name: "Intro" }), others: [track("o", { name: "Intro" })], reason: "oldest" as const, suspect: true };
+  expect(render(<Review groups={[suspect]} onApprove={() => {}} onQuit={() => {}} />).lastFrame()).toContain("maybe different songs");
+});
