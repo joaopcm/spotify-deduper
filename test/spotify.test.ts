@@ -22,7 +22,7 @@ function apiItem(i: number, overrides: Record<string, unknown> = {}) {
 function fakeApi(handler: (call: Call, n: number) => Response) {
   const calls: Call[] = [];
   const sleeps: number[] = [];
-  const fetchFn = (async (input: RequestInfo | URL, init?: RequestInit) => {
+  const fetchFn = (async (input: Parameters<typeof fetch>[0], init?: RequestInit) => {
     const call = {
       method: init?.method ?? "GET",
       url: String(input),

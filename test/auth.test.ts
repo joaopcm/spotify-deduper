@@ -8,7 +8,7 @@ import { readToken, writeToken } from "../src/store";
 
 function tokenEndpoint(body: Record<string, unknown>) {
   const requests: URLSearchParams[] = [];
-  const fetchFn = (async (_url: RequestInfo | URL, init?: RequestInit) => {
+  const fetchFn = (async (_url: Parameters<typeof fetch>[0], init?: RequestInit) => {
     requests.push(new URLSearchParams(String(init?.body)));
     return new Response(JSON.stringify(body), { status: 200 });
   }) as typeof fetch;
